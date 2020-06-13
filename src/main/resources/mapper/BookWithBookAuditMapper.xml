@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzy.design.mapper.BookWithBookAuditMapper">
+
+    <sql id="base_col_tojavabean">
+        id,p_id pId,title,audit_status auditStatus,create_time createTime,update_time updateTime,first_audit_time firstAuditTime,second_audit_time secondAuditTime,publisher,isbn,year,introduction
+    </sql>
+
+    <select id="getBlockedBook"  resultType="book">
+        select <include refid="base_col_tojavabean"/>
+        from book t1
+        right join(
+            select a.*
+            from book_audit a,(
+                select b_id,max(audit_time) maxVal
+                from book_audit
+                group by b_id
+            ) b
+            where a.b_id = b.b_id
+            and a.audit_time = b.maxVal
+            and a.audit_opinion = 1
+        )t2
+        on t1.id = t2.b_id
+        where t1.pid = #{pId}
+    </select>
+
+</mapper>

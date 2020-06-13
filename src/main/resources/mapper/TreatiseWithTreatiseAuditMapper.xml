@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzy.design.mapper.TreatiseWithTreatiseAuditMapper">
+
+    <sql id="base_col_tojavabean">
+        id,p_id pId,title,audit_status auditStatus,create_time createTime,update_time updateTime,first_audit_time firstAuditTime,second_audit_time secondAuditTime,level,type,subject,year,introduction
+    </sql>
+
+    <select id="getBlockedTreatise"  resultType="treatise">
+        select <include refid="base_col_tojavabean"/>
+        from treatise t1
+        right join(
+            select a.*
+            from treatise_audit a,(
+                select t_id,max(audit_time) maxVal
+                from treatise_audit
+                group by t_id) b
+            where a.t_id = b.t_id
+            and a.audit_time = b.maxVal
+            and a.audit_opinion = 1
+        )t2
+        on t1.id = t2.t_id
+        where t1.p_id = #{pId}
+    </select>
+
+</mapper>

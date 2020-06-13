@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzy.design.mapper.ProjectCountMapper">
+
+    <select id="getProjectCountByPId" resultType="projectCount">
+        SELECT p_id pId,`year`,`level`, COUNT(*) count
+        FROM project
+        WHERE p_id = #{pId}
+        GROUP BY `level` , p_id,`year`
+        ORDER BY p_id ASC, `level` ASC
+    </select>
+
+</mapper>

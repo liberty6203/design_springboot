@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzy.design.mapper.ProjectWithProjectAuditMapper">
+
+    <sql id="base_col_tojavabean">
+        id,p_id pId,title,audit_status auditStatus,create_time createTime,update_time updateTime,first_audit_time firstAuditTime,second_audit_time secondAuditTime,subject,department,money,start_time startTime,end_time endTime,level,year,introduction
+    </sql>
+
+    <select id="getBlockedProject"  resultType="project">
+        select <include refid="base_col_tojavabean"/>
+        from project t1
+        right join(
+        select a.*
+        from project_audit a,(
+        select pj_id,max(audit_time) maxVal
+        from project_audit
+        group by pj_id) b
+        where a.pj_id = b.pj_id
+        and a.audit_time = b.maxVal
+        and a.audit_opinion = 1
+        )t2
+        on t1.id = t2.pj_id
+        where t1.p_id = #{pId}
+    </select>
+
+</mapper>
