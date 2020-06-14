@@ -3,8 +3,8 @@ server:
 
 spring:
   datasource:
-    username: root
-    password: LZYlzy89915210
+    username: name
+    password: pwd
     url: jdbc:mysql://49.233.81.70:3306/keyan?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
